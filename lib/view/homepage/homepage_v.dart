@@ -1,3 +1,4 @@
+import 'package:app/view/detailed_page/detailed_page_v.dart';
 import 'package:app/view/homepage/homepage_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:http/retry.dart';
@@ -21,6 +22,13 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
+  // @override
+  // void didChangeDependencies() {
+  //   // TODO: implement didChangeDependencies
+  //   load();
+  //   super.didChangeDependencies();
+  // }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -36,13 +44,13 @@ class _HomePageState extends State<HomePage> {
             children: [
               //
 
-              (value.user == null || value.user!.isEmpty)
-                  ? Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : SizedBox(
-                      height: size.height * 0.7,
-                      child: ListView.builder(
+              SizedBox(
+                height: size.height * 0.75,
+                child: (value.user == null || value.user!.isEmpty)
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : ListView.builder(
                         itemCount: value.user!.length,
                         itemBuilder: (context, index) {
                           var user = value.user![index];
@@ -74,12 +82,29 @@ class _HomePageState extends State<HomePage> {
                               Icons.accessible,
                               color: Colors.red,
                             ),
-
-                            // onTap: () => Navigator.pushNamed(context, '/home'),
+                            onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DetailPage(
+                                      argument: DetaildArgument(
+                                          email: user.email!,
+                                          name: user.name!,
+                                          username: user.username!)),
+                                )).then((value) => load()),
                           );
                         },
                       ),
-                    )
+              ),
+
+              //
+
+              ListTile(
+                title: Text(value.randomUser?.company?.name ?? ""),
+                subtitle: Text(value.randomUser?.company?.catchPhrase ?? ""),
+                trailing: value.showloadingforfooter && value.randomUser == null
+                    ? CircularProgressIndicator()
+                    : SizedBox.shrink(),
+              ),
             ],
           );
         }));

@@ -1,13 +1,12 @@
 import 'dart:convert';
 
 import 'package:app/model/user_model.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart';
 
 class NetworkService {
-  String get baseUrl => "https://jsonplaceholder.typicode.com";
-
   Future getUser() async {
-    var url = '$baseUrl/users';
+    var url = '${dotenv.env['BASEURL']}/users';
 
     var result = await get(Uri.parse(url), headers: {
       "Content-Type": "application/json",
